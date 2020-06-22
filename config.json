@@ -4,7 +4,7 @@
         "port"    : 6667,
         "use-ssl" : false
     },
-    "nick"             : "__lola__",
+    "nick"             : "__init__",
     "channel"          : "#underc0de",
     "initial-commands" : [
     ]

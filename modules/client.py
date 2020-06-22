@@ -24,6 +24,7 @@ class Client:
         self.onSendCommand           = None
         self.onReceive               = None
         self.onReceivePrivateMessage = None
+        self.onReceiveChannelMessage = None
 
 
     def connect(self, host, port):
@@ -293,15 +294,26 @@ class Client:
                             self.sendCommand('PONG', response['message'])
 
                         elif(response['type'] == b'PRIVMSG'):
-                            # Mensaje privado entrante
-                            
-                            ':WHK!~WHK@whk.cl PRIVMSG nick9119999 :test'
+                            # Mensaje entrante
 
-                            if(self.onReceivePrivateMessage is not None):
-                                self.onReceivePrivateMessage(
-                                    user=self.decomposeUser(response['from']),
-                                    message=response['message']
-                                )
+                            if(
+                                (response['value'] and self.user['nick']) and
+                                (response['value'] == self.user['nick'])
+                            ):
+                                # Mensaje privado entrante
+                                if(self.onReceivePrivateMessage is not None):
+                                    self.onReceivePrivateMessage(
+                                        user=self.decomposeUser(response['from']),
+                                        message=response['message']
+                                    )
+                            else:
+                                # Mensaje del canal
+                                if(self.onReceiveChannelMessage is not None):
+                                    self.onReceiveChannelMessage(
+                                        channel=response['value'],
+                                        user=self.decomposeUser(response['from']),
+                                        message=response['message']
+                                    )
 
             else:
                 break
@@ -318,7 +330,7 @@ class Client:
             'hostname' : None
         }
 
-        matches = re.search(br'^(.+?)!~(.+?)@(.+)$', fullId)
+        matches = re.search(br'^(.+?)!(.+?)@(.+)$', fullId)
         if(matches):
             user['nick']     = matches.group(1)
             user['name']     = matches.group(2)

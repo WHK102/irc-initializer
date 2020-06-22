@@ -14,10 +14,12 @@ from modules.ia     import Ia
 class MainCls:
 
     def __init__(self):
-        self.x = None
-        self.config = None
-        self.client = Client()
-        self.ia     = Ia()
+
+        self.receiveFirstCommand = False
+        self.isJoinedInChannel   = False
+        self.config              = None
+        self.client              = Client()
+        self.ia                  = Ia()
 
         # Procesador de argumentos
         argparseHandler = argparse.ArgumentParser(
@@ -73,6 +75,7 @@ class MainCls:
         self.client.onSendCommand           = self.onSendCommand
         self.client.onReceive               = self.onReceive
         self.client.onReceivePrivateMessage = self.onReceivePrivateMessage
+        self.client.onReceiveChannelMessage = self.onReceiveChannelMessage
 
         # Conecta y deja que fluya a traves de los eventos ...
         self.client.connect(
@@ -116,25 +119,49 @@ class MainCls:
         print('<- %s' % (rawLine,))
         # print('<- %s' % (str(response),))
 
-        if(self.x is None):
-            self.x = 1
+
+        if(not self.receiveFirstCommand):
+            self.receiveFirstCommand = True
+
+            # Autentica
             self.client.setNick(self.config['nick'])
+
+        elif(
+            (not self.isJoinedInChannel) and
+            (response['type'] == b'MODE')
+        ):
+            # Se une al canal
+            self.isJoinedInChannel = True
+            self.client.joinChannel(self.config['channel'])
+            
 
 
     def onReceivePrivateMessage(self, user, message):
 
-#        print(
-#            '%s -> %s: %s' % (
-#                user['nick'].decode(),
-#                self.config['nick'],
-#                message
-#            )
-#        )
+        print(
+            '%s -> %s: %s' % (
+                user['nick'].decode(),
+                self.config['nick'],
+                message
+            )
+        )
 
-        # Envía el mensaje al procesador de mensajes
-        self.ia.receiveMessage(user, message)
-        self.client.joinChannel('#underc0de')
+        # Envía el mensaje personal al procesador de mensajes
+        self.ia.receivePrivateMessage(user, message)
 
+
+    def onReceiveChannelMessage(self, channel, user, message):
+
+        print(
+            '%s -> %s: %s' % (
+                user['nick'].decode(),
+                channel,
+                message
+            )
+        )
+
+        # Envía el mensaje del canal al procesador de mensajes
+        self.ia.receiveChannelMessage(channel, user, message)
 
 
 if __name__ == '__main__':

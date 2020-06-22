@@ -9,7 +9,13 @@ class Ia:
         self.nick = None
 
 
-    def receiveMessage(self, user, message):
+    def receivePrivateMessage(self, user, message):
 
         # Ha recibido un mensaje privado
+        pass
+
+
+    def receiveChannelMessage(self, channel, user, message):
+
+        # Alguien ha escrito en el canal
         pass
