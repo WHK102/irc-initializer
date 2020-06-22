@@ -1,0 +1,11 @@
+{
+    "server": {
+        "host"    : "irc.hira.io",
+        "port"    : 6667,
+        "use-ssl" : false
+    },
+    "nick"             : "__lola__",
+    "channel"          : "#underc0de",
+    "initial-commands" : [
+    ]
+}
