@@ -4,8 +4,5 @@
         "port"    : 6667,
         "use-ssl" : false
     },
-    "nick"             : "__init__",
-    "channel"          : "#underc0de",
-    "initial-commands" : [
-    ]
+    "nick": "__init__"
 }
