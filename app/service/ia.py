@@ -24,9 +24,9 @@ class IaService(object):
     def onConnect(self):
 
         # Login in
-        self.client.sendCommand(b'NICK', self.config['nick'])
-        self.client.sendCommand(b'USER', self.config['nick'] + b'  8 x : ' + self.config['nick'])
-        # self.client.sendCommand(b'JOIN', '#underc0de')
+        self.client.send(b'/nick ' + self.config['nick'])
+        self.client.send(b'/user ' + self.config['nick'] + b'  8 x : ' + self.config['nick'])
+        # self.client.send(b'/join #underc0de')
 
 
     def onReceivePrivateMessage(self, user, message):
@@ -40,7 +40,7 @@ class IaService(object):
             toNick=user['nick'],
             message=(b'Hola %s, esta es una prueba de respuesta a tu mensaje.' % (user['nick'],))
         )
-        
+
 
     def onReceiveChannelMessage(self, channel, user, message):
         
