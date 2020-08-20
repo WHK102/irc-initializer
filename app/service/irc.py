@@ -393,9 +393,12 @@ class IrcClient(object):
         if(not isinstance(composed, bytes)):
             composed = str(composed).encode()
 
-        matches = re.search(br'^/.+? .+', composed)
+        matches = re.search(br'^/(.+?)\s+(.+)', composed)
         if(matches):
-            self.sendCommand(matches.group(1).upper(), matches.group(2))
+            self.sendCommand(
+                matches.group(1).upper(),
+                matches.group(2)
+            )
 
 
     def sendCommand(self, command, arguments):
